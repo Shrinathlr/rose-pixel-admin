@@ -1,4 +1,3 @@
-
 import { BarChart, Users, DollarSign, Activity, ShieldCheck, Camera, Star, Briefcase, FileText, BadgeCheck, UserX, MessageSquareWarning } from 'lucide-react';
 
 export const stats = [
@@ -40,3 +39,60 @@ export const userActions = [
   { label: "Send Warning", icon: MessageSquareWarning },
   { label: "Suspend User", icon: UserX },
 ]
+
+export const bookings = [
+  { id: "BK001", client: "Alice Johnson", photographer: "Bob Williams", date: "2023-10-25", amount: 1200, status: "Completed" },
+  { id: "BK002", client: "Diana Prince", photographer: "George Costanza", date: "2023-11-15", amount: 850, status: "Confirmed" },
+  { id: "BK003", client: "Fiona Glenanne", photographer: "Bob Williams", date: "2023-11-20", amount: 450, status: "Pending" },
+  { id: "BK004", client: "Hannah Montana", photographer: "Ethan Hunt", date: "2023-10-01", amount: 2500, status: "Cancelled" },
+  { id: "BK005", client: "Alice Johnson", photographer: "George Costanza", date: "2023-12-05", amount: 600, status: "Confirmed" },
+];
+
+export const bookingActions = [
+  { label: "View Details", icon: FileText },
+  { label: "Cancel Booking", icon: UserX },
+];
+
+export const disputes = [
+  { id: "DIS001", client: "Alice Johnson", photographer: "Bob Williams", reason: "Photos not delivered", date: "2023-11-01", status: "Open" },
+  { id: "DIS002", client: "Diana Prince", photographer: "George Costanza", reason: "Quality did not match portfolio", date: "2023-11-18", status: "Pending Review" },
+  { id: "DIS003", client: "Fiona Glenanne", photographer: "Bob Williams", reason: "Incorrect charge", date: "2023-11-22", status: "Resolved" },
+];
+
+export const disputeActions = [
+  { label: "Review Evidence", icon: FileText },
+  { label: "Resolve Dispute", icon: ShieldCheck },
+  { label: "Contact Users", icon: MessageSquareWarning },
+];
+
+export const commissionRates = [
+  { id: 'wedding', category: 'Wedding Photography', rate: 20 },
+  { id: 'portrait', category: 'Portrait Sessions', rate: 15 },
+  { id: 'event', category: 'Event Coverage', rate: 18 },
+  { id: 'commercial', category: 'Commercial Shoots', rate: 25 },
+];
+
+export const payouts = [
+    { id: "PAY001", photographer: "Bob Williams", amount: 2850.75, date: "2023-11-10", status: "Paid" },
+    { id: "PAY002", photographer: "George Costanza", amount: 1500.00, date: "2023-11-12", status: "Paid" },
+    { id: "PAY003", photographer: "Ethan Hunt", amount: 950.50, date: "2023-11-15", status: "Processing" },
+    { id: "PAY004", photographer: "Bob Williams", amount: 3200.00, date: "2023-11-20", status: "Pending" },
+];
+
+export const payoutActions = [
+    { label: "Mark as Paid", icon: BadgeCheck },
+    { label: "View Details", icon: FileText },
+];
+
+export const kycRequests = [
+    { id: "KYC001", photographer: "Ethan Hunt", date: "2023-05-12", status: "Pending Review" },
+    { id: "KYC002", photographer: "New Photographer", date: "2023-11-18", status: "Needs Resubmission" },
+    { id: "KYC003", photographer: "Jane Doe", date: "2023-11-20", status: "Pending Review" },
+    { id: "KYC004", photographer: "John Smith", date: "2023-11-21", status: "Approved" },
+];
+
+export const kycActions = [
+    { label: "Approve", icon: BadgeCheck },
+    { label: "Request Resubmission", icon: MessageSquareWarning },
+    { label: "View Documents", icon: FileText },
+];
