@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -73,7 +72,7 @@ export function usePortfolioImages() {
     }
   };
 
-  // Delete image optimistically, but only refetch if deletion fails.
+  // Delete image and always refetch from backend to confirm it's really deleted.
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
@@ -91,14 +90,15 @@ export function usePortfolioImages() {
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
-      // Do not refetch here! Rely on local state to update UI immediately.
+      // Always refetch on a successful delete to verify backend state.
+      await fetchImages();
     } else {
       toast({
         variant: "destructive",
         title: "Delete failed",
         description: error.message || "Failed to delete image.",
       });
-      // If deletion fails, refetch to restore correct state
+      // Refetch to restore correct state in case content was not deleted.
       await fetchImages();
     }
     setDeletingImageName(null);
