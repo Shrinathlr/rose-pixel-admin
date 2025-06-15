@@ -73,10 +73,14 @@ export function usePortfolioImages() {
     }
   };
 
-  // Delete image and only reset deletingImageName after images are reloaded.
+  // Optimistic Delete: hide image immediately from UI, then fetch backend confirmation.
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
+
+    // Optimistically remove the image from images.
+    setImages((prev) => prev.filter((img) => img.name !== filename));
+
     const filePath = `${userId}/${filename}`;
     const { error } = await supabase.storage.from(BUCKET).remove([filePath]);
     if (!error) {
@@ -84,15 +88,17 @@ export function usePortfolioImages() {
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
-      await fetchImages();
     } else {
+      // On failure, refetch from backend to revert optimistic delete if needed.
       toast({
         variant: "destructive",
         title: "Delete failed",
         description: error.message || "Failed to delete image.",
       });
+      await fetchImages();
     }
-    setDeletingImageName(null); // Only reset after fetchImages()
+    await fetchImages(); // Always ensure UI syncs with backend
+    setDeletingImageName(null);
   };
 
   return {
