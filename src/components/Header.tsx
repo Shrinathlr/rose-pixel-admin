@@ -5,7 +5,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const LOGO_URL = "/lovable-uploads/d86d63c4-0fad-4248-9ab3-8ee8e81e9b79.png";
+const LOGO_URL = "/lovable-uploads/39bfa6f4-5595-4b19-96b4-1acbb4c0f42e.png";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -23,14 +23,14 @@ const Header = () => {
 
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-20 items-center">
+      <div className="container flex h-24 items-center">
         <div className="mr-4 hidden md:flex">
           <Link to="/" className="mr-6 flex items-center space-x-2">
             <img
               src={LOGO_URL}
               alt="REELSSTUDIOS Logo"
-              className="h-24 w-auto bg-white object-contain"
-              style={{ minWidth: 96, maxHeight: 96 }}
+              className="h-28 w-auto object-contain"
+              style={{ minWidth: 112, maxHeight: 112 }}
             />
             <span className="hidden font-bold sm:inline-block text-lg ml-2 tracking-wide">
               REELSSTUDIOS
@@ -59,8 +59,8 @@ const Header = () => {
                     <img
                       src={LOGO_URL}
                       alt="REELSSTUDIOS Logo"
-                      className="h-24 w-auto bg-white object-contain"
-                      style={{ minWidth: 96, maxHeight: 96 }}
+                      className="h-28 w-auto object-contain"
+                      style={{ minWidth: 112, maxHeight: 112 }}
                     />
                     <span className="ml-2">REELSSTUDIOS</span>
                   </Link>
@@ -94,4 +94,3 @@ const Header = () => {
 };
 
 export default Header;
-
