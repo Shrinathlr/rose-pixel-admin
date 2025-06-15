@@ -1,11 +1,10 @@
-
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
-const LOGO_URL = "/lovable-uploads/26c2478b-427b-48b3-90ce-cc4cc6c03963.png";
+const LOGO_URL = "/lovable-uploads/478bb9cd-5f6d-40e7-b38f-e8debfb90c53.png";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
