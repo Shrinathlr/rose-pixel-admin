@@ -77,20 +77,27 @@ export function usePortfolioImages() {
     if (!userId) return;
     setDeletingImageName(filename);
 
-    // Optimistically remove from UI
-    setImages((prev) => prev.filter((img) => img.name !== filename));
-
     const filePath = `${userId}/${filename}`;
-    console.log("Deleting filePath from Supabase Storage:", filePath);
+    console.log("[Portfolio] Deleting filePath from Supabase Storage:", filePath);
+
+    // Call Supabase to actually remove the file
     const { error, data } = await supabase.storage.from(BUCKET).remove([filePath]);
-    console.log("Supabase remove response:", { error, data });
+    console.log("[Portfolio] Supabase remove() response:", { error, data });
+
+    // Immediately fetch the list of images in the folder from Supabase Storage
+    const { data: storageList, error: listError } = await supabase.storage.from(BUCKET).list(`${userId}/`);
+    if (listError) {
+      console.error("[Portfolio] Error listing storage after delete:", listError);
+    } else {
+      console.log(`[Portfolio] Storage contents of ${BUCKET}/${userId}/ after delete:`, storageList);
+    }
 
     if (!error) {
       toast({
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
-      // Always refetch on a successful delete to verify backend state.
+      // Refetch to confirm backend state. Backend is always source of truth.
       await fetchImages();
     } else {
       toast({
@@ -98,9 +105,10 @@ export function usePortfolioImages() {
         title: "Delete failed",
         description: error.message || "Failed to delete image.",
       });
-      // Refetch to restore correct state in case content was not deleted.
+      // Refetch to restore correct state if deletion failed.
       await fetchImages();
     }
+
     setDeletingImageName(null);
   };
 
