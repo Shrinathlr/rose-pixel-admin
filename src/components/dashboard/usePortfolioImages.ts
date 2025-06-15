@@ -77,11 +77,15 @@ export function usePortfolioImages() {
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
+
     // Optimistically remove from UI
     setImages((prev) => prev.filter((img) => img.name !== filename));
 
     const filePath = `${userId}/${filename}`;
-    const { error } = await supabase.storage.from(BUCKET).remove([filePath]);
+    console.log("Deleting filePath from Supabase Storage:", filePath);
+    const { error, data } = await supabase.storage.from(BUCKET).remove([filePath]);
+    console.log("Supabase remove response:", { error, data });
+
     if (!error) {
       toast({
         title: "Deleted",
@@ -107,5 +111,5 @@ export function usePortfolioImages() {
     deletingImageName,
     uploadImage,
     deleteImage,
-  }
+  };
 }
