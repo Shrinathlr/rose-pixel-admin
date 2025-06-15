@@ -73,12 +73,11 @@ export function usePortfolioImages() {
     }
   };
 
-  // Optimistic Delete: hide image immediately from UI, then fetch backend confirmation.
+  // Delete image optimistically, but only refetch if deletion fails.
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
-
-    // Optimistically remove the image from images.
+    // Optimistically remove from UI
     setImages((prev) => prev.filter((img) => img.name !== filename));
 
     const filePath = `${userId}/${filename}`;
@@ -88,16 +87,16 @@ export function usePortfolioImages() {
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
+      // Do not refetch here! Rely on local state to update UI immediately.
     } else {
-      // On failure, refetch from backend to revert optimistic delete if needed.
       toast({
         variant: "destructive",
         title: "Delete failed",
         description: error.message || "Failed to delete image.",
       });
+      // If deletion fails, refetch to restore correct state
       await fetchImages();
     }
-    await fetchImages(); // Always ensure UI syncs with backend
     setDeletingImageName(null);
   };
 
