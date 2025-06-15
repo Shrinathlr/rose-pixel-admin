@@ -1,4 +1,3 @@
-
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -88,13 +87,14 @@ export function usePortfolioImages() {
     const { error, data } = await supabase.storage.from(BUCKET).remove([filePath]);
     console.log("[Portfolio] Supabase remove() response:", { error, data });
 
-    // Always refetch images right after delete attempt, no matter what
-    await fetchImages();
+    let needsFetch = true;
+    let showDeleteFailed = false;
 
     // Refetch list directly from Supabase for verification
     const { data: storageList, error: listError } = await supabase.storage.from(BUCKET).list(`${userId}/`);
     if (listError) {
       console.error("[Portfolio] Error listing storage after delete:", listError);
+      showDeleteFailed = true;
     } else {
       console.log(`[Portfolio] Storage contents of ${BUCKET}/${userId}/ after delete:`, (storageList ?? []).map(d => d.name));
       // Check if deleted file is still present
@@ -105,17 +105,16 @@ export function usePortfolioImages() {
           title: "Delete failed",
           description: "Failed to permanently delete image. Please try again or contact support.",
         });
-        // Refetch again on failure, just to be sure
-        await fetchImages();
+        showDeleteFailed = true;
       }
     }
 
-    if (!error) {
+    if (!error && !showDeleteFailed) {
       toast({
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
-    } else {
+    } else if (error) {
       toast({
         variant: "destructive",
         title: "Delete failed",
@@ -123,6 +122,8 @@ export function usePortfolioImages() {
       });
     }
 
+    // Always fetch images one final time to get the latest backend state
+    await fetchImages();
     setDeletingImageName(null);
   };
 
