@@ -28,13 +28,11 @@ const Header = () => {
           <Link to="/" className="mr-6 flex items-center space-x-2">
             <img
               src={LOGO_URL}
-              alt="REELSSTUDIOS Logo"
+              alt="Logo"
               className="h-28 w-auto object-contain"
               style={{ minWidth: 112, maxHeight: 112 }}
             />
-            <span className="hidden font-bold sm:inline-block text-lg ml-2 tracking-wide">
-              REELSSTUDIOS
-            </span>
+            {/* Removed REELSSTUDIOS text */}
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground/60">Dashboard</Link>
@@ -58,11 +56,11 @@ const Header = () => {
                   <Link to="/" className="flex items-center space-x-2 text-lg font-medium">
                     <img
                       src={LOGO_URL}
-                      alt="REELSSTUDIOS Logo"
+                      alt="Logo"
                       className="h-28 w-auto object-contain"
                       style={{ minWidth: 112, maxHeight: 112 }}
                     />
-                    <span className="ml-2">REELSSTUDIOS</span>
+                    {/* Removed REELSSTUDIOS text */}
                   </Link>
                   <Link to="/" className="block px-2 py-1 text-lg">Dashboard</Link>
                   <Link to="/onboarding" className="block px-2 py-1 text-lg">Onboarding</Link>
@@ -94,3 +92,4 @@ const Header = () => {
 };
 
 export default Header;
+
