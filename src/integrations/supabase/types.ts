@@ -30,6 +30,68 @@ export type Database = {
         }
         Relationships: []
       }
+      customer_requests: {
+        Row: {
+          created_at: string | null
+          customer_id: string
+          details: string | null
+          event_date: string | null
+          event_type: string
+          id: string
+          photographer_id: string
+        }
+        Insert: {
+          created_at?: string | null
+          customer_id: string
+          details?: string | null
+          event_date?: string | null
+          event_type: string
+          id?: string
+          photographer_id: string
+        }
+        Update: {
+          created_at?: string | null
+          customer_id?: string
+          details?: string | null
+          event_date?: string | null
+          event_type?: string
+          id?: string
+          photographer_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "customer_requests_photographer_id_fkey"
+            columns: ["photographer_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      profiles: {
+        Row: {
+          created_at: string | null
+          email: string | null
+          full_name: string | null
+          id: string
+          onboarded: boolean | null
+        }
+        Insert: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id: string
+          onboarded?: boolean | null
+        }
+        Update: {
+          created_at?: string | null
+          email?: string | null
+          full_name?: string | null
+          id?: string
+          onboarded?: boolean | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
