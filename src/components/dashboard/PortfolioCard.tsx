@@ -1,16 +1,17 @@
 
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { PlusCircle } from "lucide-react";
-
-const images = [
-  "photo-1649972904349-6e44c42644a7",
-  "photo-1581091226825-a6a2a5aee158",
-  "photo-1519389950473-47ba0277781c",
-  "photo-1500673922987-e212871fec22",
-];
+import { Upload, Trash } from "lucide-react";
+import { useRef } from "react";
+import { usePortfolioImages } from "@/components/dashboard/usePortfolioImages";
 
 const PortfolioCard = () => {
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const {
+    images, isLoading, uploadImage, deleteImage,
+    uploading, deletingImageName
+  } = usePortfolioImages();
+
   return (
     <Card className="animate-fade-in" style={{ animationDelay: '400ms' }}>
       <CardHeader className="flex flex-row items-center justify-between">
@@ -18,23 +19,62 @@ const PortfolioCard = () => {
           <CardTitle>My Portfolio</CardTitle>
           <CardDescription>Your sample work for clients to see.</CardDescription>
         </div>
-        <Button variant="outline" size="sm">
-          <PlusCircle className="mr-2 h-4 w-4" />
-          Add Photo
-        </Button>
+        <div>
+          <input
+            type="file"
+            accept="image/*"
+            className="hidden"
+            ref={fileInputRef}
+            onChange={async (e) => {
+              if (e.target.files && e.target.files[0]) {
+                await uploadImage(e.target.files[0]);
+                e.target.value = ""; // Reset so same file can be picked again
+              }
+            }}
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploading}
+          >
+            <Upload className="mr-2 h-4 w-4" />
+            {uploading ? "Uploading..." : "Add Photo"}
+          </Button>
+        </div>
       </CardHeader>
       <CardContent>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {images.map((img) => (
-            <div key={img} className="overflow-hidden rounded-lg">
-              <img
-                src={`https://images.unsplash.com/${img}?&w=400&h=400&q=80&fit=crop`}
-                alt="Portfolio image"
-                className="h-full w-full object-cover aspect-square transition-transform hover:scale-105"
-              />
-            </div>
-          ))}
-        </div>
+        {isLoading ? (
+          <div className="text-muted-foreground py-6 text-center">Loading...</div>
+        ) : images.length === 0 ? (
+          <div className="text-muted-foreground py-6 text-center">No portfolio images yet.</div>
+        ) : (
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {images.map((img) => (
+              <div key={img.name} className="relative overflow-hidden rounded-lg group">
+                <img
+                  src={img.publicUrl}
+                  alt="Portfolio"
+                  className="h-full w-full object-cover aspect-square transition-transform hover:scale-105"
+                />
+                <Button
+                  variant="destructive"
+                  size="icon"
+                  className="absolute top-2 right-2 opacity-80 hover:opacity-100 transition"
+                  onClick={() => deleteImage(img.name)}
+                  disabled={deletingImageName === img.name}
+                  aria-label="Delete"
+                >
+                  {deletingImageName === img.name ? (
+                    <span className="text-xs">...</span>
+                  ) : (
+                    <Trash className="h-4 w-4" />
+                  )}
+                </Button>
+              </div>
+            ))}
+          </div>
+        )}
       </CardContent>
     </Card>
   );

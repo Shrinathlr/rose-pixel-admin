@@ -9,8 +9,8 @@ const EarningsCard = () => {
         <CardDescription>Your earnings this month.</CardDescription>
       </CardHeader>
       <CardContent>
-        <p className="text-4xl font-bold text-primary">$4,850</p>
-        <p className="text-sm text-muted-foreground mt-1">+20% from last month</p>
+        <p className="text-4xl font-bold text-primary">$0.00</p>
+        <p className="text-sm text-muted-foreground mt-1">No earnings yet</p>
       </CardContent>
     </Card>
   );
