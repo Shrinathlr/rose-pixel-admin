@@ -1,3 +1,4 @@
+
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { toast } from "@/hooks/use-toast";
@@ -75,7 +76,7 @@ export function usePortfolioImages() {
     }
   };
 
-  // Delete image and always refetch images from backend to confirm deletion
+  // Delete image relying only on .remove() result (avoid double checking via list)
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
@@ -87,34 +88,12 @@ export function usePortfolioImages() {
     const { error, data } = await supabase.storage.from(BUCKET).remove([filePath]);
     console.log("[Portfolio] Supabase remove() response:", { error, data });
 
-    let needsFetch = true;
-    let showDeleteFailed = false;
-
-    // Refetch list directly from Supabase for verification
-    const { data: storageList, error: listError } = await supabase.storage.from(BUCKET).list(`${userId}/`);
-    if (listError) {
-      console.error("[Portfolio] Error listing storage after delete:", listError);
-      showDeleteFailed = true;
-    } else {
-      console.log(`[Portfolio] Storage contents of ${BUCKET}/${userId}/ after delete:`, (storageList ?? []).map(d => d.name));
-      // Check if deleted file is still present
-      const stillPresent = (storageList ?? []).some(d => d.name === filename);
-      if (stillPresent) {
-        toast({
-          variant: "destructive",
-          title: "Delete failed",
-          description: "Failed to permanently delete image. Please try again or contact support.",
-        });
-        showDeleteFailed = true;
-      }
-    }
-
-    if (!error && !showDeleteFailed) {
+    if (!error) {
       toast({
         title: "Deleted",
         description: "Image removed from your gallery.",
       });
-    } else if (error) {
+    } else {
       toast({
         variant: "destructive",
         title: "Delete failed",
@@ -122,7 +101,7 @@ export function usePortfolioImages() {
       });
     }
 
-    // Always fetch images one final time to get the latest backend state
+    // Always fetch latest image list for UI sync
     await fetchImages();
     setDeletingImageName(null);
   };
