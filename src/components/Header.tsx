@@ -1,9 +1,11 @@
-import { Camera, Menu } from "lucide-react";
+
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+
+const LOGO_URL = "/lovable-uploads/26c2478b-427b-48b3-90ce-cc4cc6c03963.png";
 
 const Header = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -24,8 +26,15 @@ const Header = () => {
       <div className="container flex h-14 items-center">
         <div className="mr-4 hidden md:flex">
           <Link to="/" className="mr-6 flex items-center space-x-2">
-            <Camera className="h-6 w-6 text-primary" />
-            <span className="hidden font-bold sm:inline-block">Photographer Hub</span>
+            <img
+              src={LOGO_URL}
+              alt="REELSSTUDIOS Logo"
+              className="h-10 w-10 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
+              style={{ minWidth: 40, minHeight: 40 }}
+            />
+            <span className="hidden font-bold sm:inline-block text-lg ml-2 tracking-wide">
+              REELSSTUDIOS
+            </span>
           </Link>
           <nav className="flex items-center space-x-6 text-sm font-medium">
             <Link to="/" className="transition-colors hover:text-foreground/80 text-foreground/60">Dashboard</Link>
@@ -37,15 +46,22 @@ const Header = () => {
             <Sheet>
               <SheetTrigger asChild>
                 <Button variant="ghost" size="icon">
-                  <Menu className="h-5 w-5" />
+                  {/* The menu icon remains for mobile */}
                   <span className="sr-only">Toggle Menu</span>
+                  <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
+                    <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16"/>
+                  </svg>
                 </Button>
               </SheetTrigger>
               <SheetContent side="left" className="w-[300px] sm:w-[400px]">
                 <nav className="flex flex-col gap-4 mt-8">
                   <Link to="/" className="flex items-center space-x-2 text-lg font-medium">
-                    <Camera className="h-6 w-6 text-primary" />
-                    <span>Photographer Hub</span>
+                    <img
+                      src={LOGO_URL}
+                      alt="REELSSTUDIOS Logo"
+                      className="h-12 w-12 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
+                    />
+                    <span className="ml-2">REELSSTUDIOS</span>
                   </Link>
                   <Link to="/" className="block px-2 py-1 text-lg">Dashboard</Link>
                   <Link to="/onboarding" className="block px-2 py-1 text-lg">Onboarding</Link>
