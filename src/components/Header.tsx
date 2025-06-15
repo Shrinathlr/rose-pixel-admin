@@ -29,8 +29,8 @@ const Header = () => {
             <img
               src={LOGO_URL}
               alt="REELSSTUDIOS Logo"
-              className="h-10 w-10 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
-              style={{ minWidth: 40, minHeight: 40 }}
+              className="h-16 w-16 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
+              style={{ minWidth: 64, minHeight: 64 }}
             />
             <span className="hidden font-bold sm:inline-block text-lg ml-2 tracking-wide">
               REELSSTUDIOS
@@ -59,7 +59,7 @@ const Header = () => {
                     <img
                       src={LOGO_URL}
                       alt="REELSSTUDIOS Logo"
-                      className="h-12 w-12 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
+                      className="h-16 w-16 rounded-full border border-gray-200 shadow-sm bg-white object-cover"
                     />
                     <span className="ml-2">REELSSTUDIOS</span>
                   </Link>
