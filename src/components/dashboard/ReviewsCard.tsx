@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Star } from "lucide-react";
 
 const reviews = [
-  { name: 'Client A', comment: 'Absolutely stunning photos, highly recommend!', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704e', rating: 5 },
-  { name: 'Client B', comment: 'Very professional and delivered on time.', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704f', rating: 5 },
+  { name: 'Priya Nair', comment: 'Absolutely stunning photos, highly recommend Shrinath!', avatar: 'https://i.pravatar.cc/150?u=priyanair999', rating: 5 },
+  { name: 'Suresh Kumar', comment: 'Very professional and delivered beautiful portraits.', avatar: 'https://i.pravatar.cc/150?u=sureshkumar555', rating: 5 },
 ];
 
 const ReviewsCard = () => {

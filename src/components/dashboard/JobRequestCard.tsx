@@ -4,8 +4,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 
 const requests = [
-  { name: 'John Smith', event: 'Wedding Photography', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704a' },
-  { name: 'Emily White', event: 'Corporate Headshots', avatar: 'https://i.pravatar.cc/150?u=a042581f4e29026704b' },
+  { name: 'Aarti Sharma', event: 'Wedding Photography', avatar: 'https://i.pravatar.cc/150?u=sharma123a' },
+  { name: 'Rahul Verma', event: 'Corporate Headshots', avatar: 'https://i.pravatar.cc/150?u=rahul892v' },
 ];
 
 const JobRequestCard = () => {

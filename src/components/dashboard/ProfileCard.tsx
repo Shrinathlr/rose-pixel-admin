@@ -12,11 +12,11 @@ const ProfileCard = () => {
       </CardHeader>
       <CardContent className="flex flex-col items-center text-center">
         <Avatar className="w-24 h-24 mb-4">
-          <AvatarImage src="https://i.pravatar.cc/150?u=a042581f4e29026704d" alt="Photographer" />
-          <AvatarFallback>JD</AvatarFallback>
+          <AvatarImage src="https://i.pravatar.cc/150?u=shrinath-photographer" alt="Photographer" />
+          <AvatarFallback>SH</AvatarFallback>
         </Avatar>
-        <h3 className="text-xl font-bold">Jane Doe</h3>
-        <p className="text-muted-foreground">San Francisco, CA</p>
+        <h3 className="text-xl font-bold">Shrinath</h3>
+        <p className="text-muted-foreground">Pune, India</p>
         <p className="mt-4 text-sm">
           Passionate landscape and portrait photographer with 5+ years of experience capturing life's beautiful moments.
         </p>
