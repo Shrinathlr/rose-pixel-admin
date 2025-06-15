@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -19,6 +18,15 @@ const Onboarding = () => {
   const [kycDoc] = useState<File | null>(null); // You can wire up upload logic as desired
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  // Ensure user is authenticated before continuing (extra guard for direct navigation)
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!session?.user) {
+        navigate("/auth");
+      }
+    });
+  }, [navigate]);
 
   async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();

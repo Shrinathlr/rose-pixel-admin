@@ -1,10 +1,24 @@
-
 import { Camera, Menu } from "lucide-react";
 import { Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { useEffect, useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 
 const Header = () => {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    let mounted = true;
+    const { data: listener } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (mounted) setIsLoggedIn(!!session?.user);
+    });
+    supabase.auth.getSession().then(({ data }) => {
+      if (mounted) setIsLoggedIn(!!data.session?.user);
+    });
+    return () => { mounted = false; listener.subscription.unsubscribe(); }
+  }, []);
+
   return (
     <header className="sticky top-0 z-50 w-full border-b border-border/40 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
       <div className="container flex h-14 items-center">
@@ -40,7 +54,21 @@ const Header = () => {
             </Sheet>
           </div>
           <nav className="flex items-center">
-            <Button>Get Started</Button>
+            {!isLoggedIn ? (
+              <Button asChild>
+                <a href="/auth">Sign In</a>
+              </Button>
+            ) : (
+              <Button
+                variant="outline"
+                onClick={async () => {
+                  await supabase.auth.signOut();
+                  window.location.href = "/auth";
+                }}
+              >
+                Logout
+              </Button>
+            )}
           </nav>
         </div>
       </div>
