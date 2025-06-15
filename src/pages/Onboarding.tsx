@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Upload } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { uploadProfilePhoto } from "@/lib/uploadProfilePhoto";
+import { uploadKycDocument } from "@/lib/uploadKycDocument";
 import { toast } from "@/components/ui/use-toast";
 
 const Onboarding = () => {
@@ -15,11 +17,10 @@ const Onboarding = () => {
   const [bio, setBio] = useState("");
   const [location, setLocation] = useState("");
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
-  const [kycDoc] = useState<File | null>(null); // You can wire up upload logic as desired
+  const [kycDoc, setKycDoc] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // Ensure user is authenticated before continuing (extra guard for direct navigation)
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (!session?.user) {
@@ -33,18 +34,23 @@ const Onboarding = () => {
     setLoading(true);
 
     try {
-      // Get current user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error("You must be signed in.");
 
-      // Upload photo (if selected)
       let profilePhotoUrl: string | null = null;
       if (profilePhoto) {
         profilePhotoUrl = await uploadProfilePhoto(user.id, profilePhoto);
         if (!profilePhotoUrl) throw new Error("Photo upload failed");
       }
 
-      // Update profile row
+      // KYC doc upload
+      let kycDocUrl: string | null = null;
+      if (kycDoc) {
+        kycDocUrl = await uploadKycDocument(user.id, kycDoc);
+        if (!kycDocUrl) throw new Error("KYC doc upload failed");
+      }
+
+      // Update profile row, set kyc_status 'pending' and kyc_doc_url as uploaded
       const { error } = await supabase
         .from("profiles")
         .update({
@@ -52,6 +58,8 @@ const Onboarding = () => {
           bio,
           location,
           profile_photo_url: profilePhotoUrl,
+          kyc_doc_url: kycDocUrl,
+          kyc_status: kycDocUrl ? "pending" : null,
           onboarded: true,
         })
         .eq("id", user.id);
@@ -63,7 +71,6 @@ const Onboarding = () => {
         description: "Your profile is now live!",
       });
 
-      // Redirect to dashboard after short delay
       setTimeout(() => navigate("/"), 1200);
     } catch (err: any) {
       toast({
@@ -141,14 +148,23 @@ const Onboarding = () => {
                         className="relative cursor-pointer rounded-md font-semibold text-primary focus-within:outline-none focus-within:ring-2 focus-within:ring-primary focus-within:ring-offset-2 hover:text-primary/80"
                       >
                         <span>Upload ID</span>
-                        <Input id="kyc-upload" name="kyc-upload" type="file" className="sr-only" disabled />
+                        <Input
+                          id="kyc-upload"
+                          name="kyc-upload"
+                          type="file"
+                          className="sr-only"
+                          accept=".jpg,.jpeg,.png,.pdf"
+                          onChange={e => setKycDoc(e.target.files?.[0] || null)}
+                          required
+                        />
                       </Label>
                       <p className="pl-1">or drag and drop</p>
                     </div>
-                    <p className="text-xs leading-5 text-muted-foreground">PNG, JPG, PDF up to 10MB</p>
+                    <p className="text-xs leading-5 text-muted-foreground">
+                      {kycDoc ? kycDoc.name : "PNG, JPG, PDF up to 10MB"}
+                    </p>
                   </div>
                 </div>
-                {/* To securely store files, I'll need to be connected to a service like Supabase Storage. */}
               </div>
             </div>
             <Button className="w-full" type="submit" disabled={loading}>

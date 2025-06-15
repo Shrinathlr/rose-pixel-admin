@@ -2,7 +2,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Edit, ShieldCheck } from "lucide-react";
+import { Edit, ShieldCheck, Clock } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
@@ -14,6 +14,7 @@ type Profile = {
   profile_photo_url: string | null;
   onboarded: boolean | null;
   email: string | null;
+  kyc_status?: string | null;
 };
 
 const ProfileCard = () => {
@@ -25,18 +26,16 @@ const ProfileCard = () => {
 
     async function fetchProfile() {
       setLoading(true);
-      // Get current session user
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) {
         setLoading(false);
         return;
       }
-      // Fetch profile for this user
       const { data, error } = await supabase
         .from("profiles")
         .select("*")
         .eq("id", user.id)
-        .single();
+        .maybeSingle();
 
       if (!ignore) {
         if (error) {
@@ -88,17 +87,31 @@ const ProfileCard = () => {
     );
   }
 
+  const getKycBadge = () => {
+    if (profile.kyc_status === "verified") {
+      return (
+        <Badge variant="secondary" className="flex items-center gap-1 px-2 py-1 text-xs">
+          <ShieldCheck className="h-4 w-4 text-green-600" />
+          Verified
+        </Badge>
+      );
+    } else if (profile.kyc_status === "pending") {
+      return (
+        <Badge variant="outline" className="flex items-center gap-1 px-2 py-1 text-xs">
+          <Clock className="h-4 w-4 text-yellow-500" />
+          Pending Approval
+        </Badge>
+      );
+    }
+    return null;
+  };
+
   return (
     <Card className="animate-fade-in">
       <CardHeader>
         <div className="flex items-center justify-between">
           <CardTitle>My Profile</CardTitle>
-          {profile.onboarded && (
-            <Badge variant="secondary" className="flex items-center gap-1 px-2 py-1 text-xs">
-              <ShieldCheck className="h-4 w-4 text-green-600" />
-              Verified
-            </Badge>
-          )}
+          {getKycBadge()}
         </div>
       </CardHeader>
       <CardContent className="flex flex-col items-center text-center">
