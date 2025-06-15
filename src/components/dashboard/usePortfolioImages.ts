@@ -13,14 +13,12 @@ export function usePortfolioImages() {
 
   const [userId, setUserId] = useState<string | null>(null);
 
-  // Fetch user id
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUserId(data?.user?.id || null);
     });
   }, []);
 
-  // Fetch images for the user
   const fetchImages = useCallback(async () => {
     if (!userId) return;
     setIsLoading(true);
@@ -53,7 +51,6 @@ export function usePortfolioImages() {
     if (userId) fetchImages();
   }, [userId, fetchImages]);
 
-  // Upload image
   const uploadImage = async (file: File) => {
     if (!userId) return;
     setUploading(true);
@@ -76,13 +73,12 @@ export function usePortfolioImages() {
     }
   };
 
-  // Delete image
+  // Delete image and only reset deletingImageName after images are reloaded.
   const deleteImage = async (filename: string) => {
     if (!userId) return;
     setDeletingImageName(filename);
     const filePath = `${userId}/${filename}`;
     const { error } = await supabase.storage.from(BUCKET).remove([filePath]);
-    setDeletingImageName(null);
     if (!error) {
       toast({
         title: "Deleted",
@@ -96,6 +92,7 @@ export function usePortfolioImages() {
         description: error.message || "Failed to delete image.",
       });
     }
+    setDeletingImageName(null); // Only reset after fetchImages()
   };
 
   return {
