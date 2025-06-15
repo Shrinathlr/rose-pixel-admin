@@ -75,6 +75,8 @@ export type Database = {
           email: string | null
           full_name: string | null
           id: string
+          kyc_doc_url: string | null
+          kyc_status: string | null
           location: string | null
           onboarded: boolean | null
           profile_photo_url: string | null
@@ -85,6 +87,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id: string
+          kyc_doc_url?: string | null
+          kyc_status?: string | null
           location?: string | null
           onboarded?: boolean | null
           profile_photo_url?: string | null
@@ -95,6 +99,8 @@ export type Database = {
           email?: string | null
           full_name?: string | null
           id?: string
+          kyc_doc_url?: string | null
+          kyc_status?: string | null
           location?: string | null
           onboarded?: boolean | null
           profile_photo_url?: string | null
