@@ -88,9 +88,6 @@ export function usePortfolioImages() {
     const { error, data } = await supabase.storage.from(BUCKET).remove([filePath]);
     console.log("[Portfolio] Supabase remove() response:", { error, data });
 
-    // Immediately refetch
-    await fetchImages();
-
     // Refetch list directly from Supabase for verification
     const { data: storageList, error: listError } = await supabase.storage.from(BUCKET).list(`${userId}/`);
     if (listError) {
@@ -120,6 +117,9 @@ export function usePortfolioImages() {
         description: error.message || "Failed to delete image.",
       });
     }
+
+    // Always refetch images from backend to ensure UI is up-to-date
+    await fetchImages();
 
     setDeletingImageName(null);
   };
