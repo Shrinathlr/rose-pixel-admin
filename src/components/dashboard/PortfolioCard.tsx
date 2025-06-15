@@ -1,9 +1,9 @@
-
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Upload, Trash } from "lucide-react";
 import { useRef } from "react";
 import { usePortfolioImages } from "@/components/dashboard/usePortfolioImages";
+import { toast } from "@/hooks/use-toast";
 
 const PortfolioCard = () => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -28,7 +28,7 @@ const PortfolioCard = () => {
             onChange={async (e) => {
               if (e.target.files && e.target.files[0]) {
                 await uploadImage(e.target.files[0]);
-                e.target.value = ""; // Reset so same file can be picked again
+                e.target.value = ""; // So same file can be picked again
               }
             }}
           />

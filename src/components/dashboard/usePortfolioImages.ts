@@ -1,8 +1,8 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { toast } from "@/hooks/use-toast";
 
-// Configure your bucket name here
 const BUCKET = "profile-photos";
 
 export function usePortfolioImages() {
@@ -11,16 +11,16 @@ export function usePortfolioImages() {
   const [uploading, setUploading] = useState(false);
   const [deletingImageName, setDeletingImageName] = useState<string | null>(null);
 
-  // Get user id for folder path:
   const [userId, setUserId] = useState<string | null>(null);
 
+  // Fetch user id
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       setUserId(data?.user?.id || null);
     });
   }, []);
 
-  // List files
+  // Fetch images for the user
   const fetchImages = useCallback(async () => {
     if (!userId) return;
     setIsLoading(true);
@@ -29,22 +29,26 @@ export function usePortfolioImages() {
       offset: 0,
       sortBy: { column: 'created_at', order: 'desc' }
     });
-    if (data) {
-      // For each image, get the public URL
-      const imagesWithUrl = data
-        .filter((item) => item.name.match(/\.(jpg|jpeg|png|webp)$/i))
-        .map((item) => ({
-          name: item.name,
-          publicUrl: supabase.storage.from(BUCKET).getPublicUrl(`${userId}/${item.name}`).data.publicUrl,
-        }));
-      setImages(imagesWithUrl);
-    } else {
+    if (error) {
       setImages([]);
+      setIsLoading(false);
+      toast({
+        variant: "destructive",
+        title: "Error loading images",
+        description: error.message,
+      });
+      return;
     }
+    const imagesWithUrl = (data ?? [])
+      .filter((item) => item.name.match(/\.(jpg|jpeg|png|webp)$/i))
+      .map((item) => ({
+        name: item.name,
+        publicUrl: supabase.storage.from(BUCKET).getPublicUrl(`${userId}/${item.name}`).data.publicUrl,
+      }));
+    setImages(imagesWithUrl);
     setIsLoading(false);
   }, [userId]);
 
-  // Fetch whenever userId changes
   useEffect(() => {
     if (userId) fetchImages();
   }, [userId, fetchImages]);
@@ -58,9 +62,17 @@ export function usePortfolioImages() {
     const { error } = await supabase.storage.from(BUCKET).upload(filePath, file, { upsert: false });
     setUploading(false);
     if (!error) {
+      toast({
+        title: "Success",
+        description: "Image uploaded to your gallery.",
+      });
       await fetchImages();
     } else {
-      alert("Failed to upload image.");
+      toast({
+        variant: "destructive",
+        title: "Upload failed",
+        description: error.message || "Failed to upload image.",
+      });
     }
   };
 
@@ -69,9 +81,21 @@ export function usePortfolioImages() {
     if (!userId) return;
     setDeletingImageName(filename);
     const filePath = `${userId}/${filename}`;
-    await supabase.storage.from(BUCKET).remove([filePath]);
+    const { error } = await supabase.storage.from(BUCKET).remove([filePath]);
     setDeletingImageName(null);
-    await fetchImages();
+    if (!error) {
+      toast({
+        title: "Deleted",
+        description: "Image removed from your gallery.",
+      });
+      await fetchImages();
+    } else {
+      toast({
+        variant: "destructive",
+        title: "Delete failed",
+        description: error.message || "Failed to delete image.",
+      });
+    }
   };
 
   return {
